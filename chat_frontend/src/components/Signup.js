@@ -112,11 +112,12 @@ const Signup=(props)=>{
 
                     },dbError=>{
                         console.log(dbError);
-                        setsignuperror("failed to add user");
+                        console.log(dbError);
+                        setsignuperror(`${dbError}`);
                     })
                 },authError=>{
                     console.log(authError);
-                    setsignuperror("failed to add user");
+                    setsignuperror(`${authError.message}`);
                 }
                 )
 
@@ -131,23 +132,23 @@ const Signup=(props)=>{
         <CssBaseline>
         <Paper elevation={6} className={classes.Paper}>
         <Typography variant="h5">
-        Login!!
+        Signup!!
         </Typography>
 
         <form className={classes.form} onSubmit={(e)=>handleSubmit(e)}>
         <FormControl required fullWidth margin='normal'>
             <InputLabel htmlFor="email-id" >Enter your email</InputLabel>
-            <Input htmlFor="email-id" required type="email" autoFocus value={email} onChange={(e)=>setemail(e.target.value)}></Input>
+            <Input id="email-id" required type="email" autoFocus value={email} onChange={(e)=>setemail(e.target.value)}></Input>
         </FormControl>
 
         <FormControl required fullWidth margin='normal'>
             <InputLabel htmlFor="password" >Enter your password</InputLabel>
-            <Input htmlFor="password" required type="password" value={password} onChange={(e)=>setpassword(e.target.value)} ></Input>
+            <Input id="password" required type="password" value={password} onChange={(e)=>setpassword(e.target.value)} ></Input>
         </FormControl>
 
         <FormControl required fullWidth margin='normal'>
             <InputLabel htmlFor="confirm-password" >Renter your password</InputLabel>
-            <Input htmlFor="confirm-password" required type="password" value={confirmpassword} onChange={(e)=>setconfirmpassword(e.target.value)} ></Input>
+            <Input id="confirm-password" required type="password" value={confirmpassword} onChange={(e)=>setconfirmpassword(e.target.value)} ></Input>
         </FormControl>
 
         {signuperror ? <Typography className={classes.errorText} component='h5' variant='h6'>
