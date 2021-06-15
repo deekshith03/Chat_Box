@@ -140,13 +140,6 @@ const Newchat=(props)=>{
             <Button fullWidth variant='contained' color='primary' className={classes.submit} type='submit'>Send</Button>
           
           </form>
-          {
-            this.state.serverError ? 
-            <Typography component='h5' variant='h6' className={classes.errorText}>
-              Unable to locate the user
-            </Typography> :
-            null
-          }
         </Paper>
         </main>
     );
