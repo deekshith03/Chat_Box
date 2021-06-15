@@ -37,8 +37,8 @@ const ChatextBox=(props)=>{
     const messagevalid=(txt)=>txt && txt.replace(/\s/g,'').length;
 
     const userclickedinput=()=>{
-
-        console.log('user clicked input')
+        console.log("user clicked input");
+        props.messagereadfn();
       }
       
       const submitmessage=()=>{

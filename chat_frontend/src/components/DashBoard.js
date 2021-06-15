@@ -6,6 +6,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { blue } from '@material-ui/core/colors';
 import ChatView from './ChatView.js';
 import ChatextBox from './ChatextBox';
+import Newchat from './NewChat.js';
 
 const useStyles = makeStyles((theme) => ({
 
@@ -31,12 +32,47 @@ const useStyles = makeStyles((theme) => ({
 
 const DashBoard=(props)=>{
     const classes =useStyles();
-    const [selectedChat,SetselectedChat]=React.useState(null);
+    const [selectedChat,SetselectedChat]=React.useState(0);
     const [email,Setemail]=React.useState(null);
     const [chats,Setchats]=React.useState([])
     const [newChatform,SetnewChatForm]=React.useState(false);
 
+    const builddockey=(friend)=>[email,friend].sort().join(':');
+
+
+    const newChatSubmit = async (chatObj) => {
+      const docKey =builddockey(chatObj.sendTo);
+      await 
+        firebase
+          .firestore()
+          .collection('chats')
+          .doc(docKey)
+          .set({
+            messages: [{
+              message: chatObj.message,
+              sender: email
+            }],
+            users: [email, chatObj.sendTo],
+            receiverHasRead: false
+          })
+      SetnewChatForm(false);
+      selectChat(chats.length - 1);
+    }
+
+    const goToChat = async (docKey, msg) => {
+      const usersInChat = docKey.split(':');
+      const chat =chats.find(_chat => usersInChat.every(_user => _chat.users.includes(_user)));
+      SetnewChatForm(false);
+      await selectChat(chats.indexOf(chat));
+      submitmessage(msg);
+    }
+
+
+
     const newchatbtnclicked=()=>{
+
+      SetnewChatForm(true);
+      SetselectedChat(null);
 
     }
 
@@ -47,6 +83,7 @@ const DashBoard=(props)=>{
       catch(error){
         console.log(error)
       }
+
      messageread()
     }
 
@@ -74,7 +111,7 @@ const DashBoard=(props)=>{
       })
     }
 
-    const builddockey=(friend)=>[email,friend].sort().join(':');
+    
 
 
     const clickedchatwherenotsender=(index)=>{
@@ -85,9 +122,7 @@ const DashBoard=(props)=>{
 
 
     const messageread=()=>{
-      console.log(chats);
-      console.log(selectedChat);
-      const dockey=builddockey(chats[selectedChat].users.filter((user)=>user!==email)[0]);   
+        const dockey=builddockey(chats[selectedChat].users.filter((user)=>user!==email)[0]);   
         console.log(dockey);
 
         if(clickedchatwherenotsender(selectedChat))
@@ -104,6 +139,7 @@ const DashBoard=(props)=>{
           console.log('user was the sender');
         }
     }
+
     useEffect(()=>{
 
         firebase.auth().onAuthStateChanged(async _usr=>{
@@ -147,7 +183,8 @@ const DashBoard=(props)=>{
          selectedChatIndex={selectedChat}
         />
         {newChatform==true?null:<ChatView user={email} chat={chats[selectedChat]}  />}
-        {selectedChat!==null && !newChatform ? <ChatextBox submitmessage={submitmessage}/>:null}
+        {selectedChat!==null && !newChatform ? <ChatextBox messagereadfn={messageread} submitmessage={submitmessage}/>:null}
+        {newChatform ? <Newchat goToChatFn={goToChat} newChatSubmitFn={newChatSubmit}></Newchat>:null}
         <Button className={classes.logoutbtn} onClick={handlelogout} variant='contained' color='primary' fullWidth> Log out</Button>
         
         </main>

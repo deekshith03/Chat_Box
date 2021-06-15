@@ -41,12 +41,20 @@ const ChatListComponent=(props)=>{
     const classes =useStyles();
 
     const newchat=()=>{
+        
+        props.newchatbtnfn()
 
     }
 
     const slectedchat=(index)=>{
 
         props.selectChatfn(index);
+
+    }
+
+    const userissender=(chat)=>{
+
+       return( chat.messages[chat.messages.length-1].sender=== props.useremail);
 
     }
 
@@ -78,6 +86,9 @@ const ChatListComponent=(props)=>{
                                 </>
                             }>
                             </ListItemText>
+                            {
+                                chat.receiverhasread === false && !userissender(chat) ?<ListItemIcon><NotificationImportant className={classes.unreadMessage}></NotificationImportant></ListItemIcon> :null
+                            }
                         </ListItem>
 
                         <Divider></Divider>
